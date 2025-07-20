@@ -17,6 +17,32 @@ function App() {
     .catch( err => console.error('Error fetching your goals ❌', err))
     }, [])
 
+    function handleChange(event) {
+      const { name, value } = event.target;
+      setNewGoal(prevGoal => ({
+        ...prevGoal,
+        [name]: value
+      }));
+    }
+    
+    function handleSubmit(event) {
+      event.preventDefault();
+    
+      fetch('http://localhost:3000/goals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newGoal)
+      })
+        .then(res => res.json())
+        .then(savedGoal => {
+          setGoals(prevGoals => [...prevGoals, savedGoal]);
+          setNewGoal({ name: "", savedAmount: "", targetAmount: "" });
+        })
+        .catch(err => console.error('Error adding goal:', err));
+    }
+    
 
 return(
   <div className='App'>
